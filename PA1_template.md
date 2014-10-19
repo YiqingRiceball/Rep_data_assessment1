@@ -1,10 +1,4 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
-
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
@@ -14,7 +8,8 @@ output:
 ###2.Process/transform the data (if necessary) into a format suitable for your analysis
 
 First, create a directory to for this project.
-```{r }
+
+```r
 if (!file.exists("assessment1")){
         dir.create("assessment1")
 }
@@ -22,7 +17,8 @@ if (!file.exists("assessment1")){
 
 Download and unzip the activity monitoring data.
 
-```{r download data}
+
+```r
 url<-"https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
 download.file(url,destfile="./assessment1/activity.zip",method="curl")
 unzip("./assessment1/activity.zip")
@@ -30,7 +26,8 @@ unzip("./assessment1/activity.zip")
 
 Load the activity monitoring data into R.
 
-```{r read in data}
+
+```r
 data<-read.csv("activity.csv",na.strings = "NA", colClass = c("numeric","Date","numeric"))
 ```
 
@@ -41,24 +38,42 @@ For this part of the assignment, you can ignore the missing values in the datase
 
 To find out the mean total number of steps taken veryday, first create a new data frame "daysum" to store the total steps everyday.
 
-```{r sum according to dates}
+
+```r
 library(plyr)
 daysum<-ddply(data,.(date),summarize,dailysum=sum(steps))
 ```
 
 Make a histogram of the total number of steps taken each day.
 
-```{r histogram1}
+
+```r
 hist(daysum$dailysum, main ="Histogram of Total Steps Taken Each Day",xlab="Total Steps Taken Each Day (steps)",col=c("Red","Orange","Yellow","Green","Blue"),border="White",ylim=c(0,40))
 ```
 
+![plot of chunk histogram1](./PA1_template_files/figure-html/histogram1.png) 
+
 ###2.Calculate and report the mean and median total number of steps taken per day
 
-```{r mean and median of total steps}
+
+```r
 totalmean<-mean(daysum$dailysum,na.rm=TRUE)
 totalmedian<-median(daysum$dailysum,na.rm=TRUE)
 print(c("The mean of total steps taken per day is ", totalmean))
+```
+
+```
+## [1] "The mean of total steps taken per day is "
+## [2] "10766.1886792453"
+```
+
+```r
 print(c("The median of total steps taken per day is ",totalmedian))
+```
+
+```
+## [1] "The median of total steps taken per day is "
+## [2] "10765"
 ```
 
 ## What is the average daily activity pattern?
@@ -68,16 +83,20 @@ print(c("The median of total steps taken per day is ",totalmedian))
 
 To make a time series plot of average number of different intervals, first create a new data frame--"avg"" with the intervals and their average of steps across all times, and then plot the average over the intervals.
 
-```{r time_series_plot1}
+
+```r
 avg<-ddply(data,.(interval),summarize,average=mean(steps,na.rm=TRUE))
 
 plot(avg$interval, avg$average, type = "l",main="Average Daily Activity Pattern (NAs excluded)",xlab="Interval (minutes)",ylab="Average Total Steps")
 ```
 
+![plot of chunk time_series_plot1](./PA1_template_files/figure-html/time_series_plot1.png) 
+
 
 ###2.Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
-```{r interval with maximum steps}
+
+```r
 for ( i in 1:nrow(avg)){
         if (avg$average[i]==max(avg$average)){
                 maxint<-avg$interval[i]
@@ -85,6 +104,12 @@ for ( i in 1:nrow(avg)){
         
 }
 print(c("The interval with the maximum number of steps in the ", maxint,"-minute interval." ))
+```
+
+```
+## [1] "The interval with the maximum number of steps in the "
+## [2] "835"                                                  
+## [3] "-minute interval."
 ```
 From the new data frame avg, we can find that when the interval is 835, the average steps taken over all the time is the largest.
 
@@ -96,9 +121,15 @@ Note that there are a number of days/intervals where there are missing values (c
 ###1.Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
 
 The following code calculate the number of missing values
-```{r number of nas}
+
+```r
 nasum<-sum(is.na(data))
 print(c("There are", nasum, " missing values in this dataset."))
+```
+
+```
+## [1] "There are"                        "2304"                            
+## [3] " missing values in this dataset."
 ```
 The number of NA values in this data set nasum is 2304 according to the following code.
 
@@ -107,7 +138,8 @@ The number of NA values in this data set nasum is 2304 according to the followin
 
 I answer the 2 questions above together. Here I replace the missin value in the dataset using correspondent average value in that interval.
 
-```{r replace na values}
+
+```r
 newdata<-data
 for ( i in 1:nrow(newdata)){
         if (is.na(newdata$steps[i])==TRUE){
@@ -121,7 +153,6 @@ for ( i in 1:nrow(newdata)){
         }
 
 }
-
 ```
 
 
@@ -129,26 +160,40 @@ for ( i in 1:nrow(newdata)){
 
 To make the required histogram, first create a dataset of the total steps taken per day.
 
-```{r new dataset with daily total steps}
-newdaysum<-ddply(newdata,.(date),summarize,dailysum=sum(steps))
 
+```r
+newdaysum<-ddply(newdata,.(date),summarize,dailysum=sum(steps))
 ```
 
 Plot a histogram of total steps taken everyday and calculate the mean and median of total steps taken each day with the new data where the missing value of steps each day is replaced by the average value of that interval.
 
-```{r histogram2}
 
+```r
 hist(newdaysum$dailysum, main ="Histogram of Total Steps Taken Each Day",xlab="Total Steps Taken Each Day (steps)",col=c("Red","Orange","Yellow","Green","Blue"),border="White",ylim=c(0,40))
-
 ```
 
-```{r calculate the new mean and median}
+![plot of chunk histogram2](./PA1_template_files/figure-html/histogram2.png) 
+
+
+```r
 newtotalmean<-mean(newdaysum$dailysum,na.rm=TRUE)
 newtotalmedian<-median(newdaysum$dailysum,na.rm=TRUE)
 
 print(c("After replacing the mising values, the mean of total steps taken per day is ",newtotalmean))
-print(c("After replacing the mising values, the median of total steps taken per day is ",newtotalmedian))
+```
 
+```
+## [1] "After replacing the mising values, the mean of total steps taken per day is "
+## [2] "10766.1886792453"
+```
+
+```r
+print(c("After replacing the mising values, the median of total steps taken per day is ",newtotalmedian))
+```
+
+```
+## [1] "After replacing the mising values, the median of total steps taken per day is "
+## [2] "10766.1886792453"
 ```
 
 The mean and median value from the data with and without NA value, newtotalmean and newtotalmedian does not differ much from the old mean and median value. The histogram generated from the dataset without NA values, compared to the one generated from, has a sharp increase in the 10000~15000 interval range, the interval range that has the highest frequency.
@@ -162,7 +207,8 @@ For this part the weekdays() function may be of some help here. Use the dataset 
 
 Create a new factor variable in the dataset with two levels -- "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
 
-```{r add column illustrating the day of the week }
+
+```r
 newdata$weekdays<-c()
 for (i in 1:length(newdata$date)){
         if (weekdays(newdata$date[i]) %in% c("Monday","Tuesday","Wednesday","Thurday","Friday"))
@@ -172,7 +218,6 @@ for (i in 1:length(newdata$date)){
 }
 
 newdata$weekdays<-as.factor(newdata$weekdays)
-
 ```
 =============
 
@@ -180,13 +225,14 @@ newdata$weekdays<-as.factor(newdata$weekdays)
 
 Create a new dataset where the average of steps taken on weekdays and weekends are calculated and plot the weekday and weekend average.
 
-```{r comparison}
+
+```r
 library(ggplot2)
 
 newavg<-ddply(newdata,.(interval,weekdays),summarize,average=mean(steps))
 
 weekplot<-ggplot(newavg,aes(interval,average))
 weekplot+geom_line(color="steelblue")+facet_grid(weekdays~.)+labs(title="Average Activity Pattern ")+ labs(x="Interval (minutes)") +labs(y="Average Total Steps")+ylim(0,250)
-
-
 ```
+
+![plot of chunk comparison](./PA1_template_files/figure-html/comparison.png) 
