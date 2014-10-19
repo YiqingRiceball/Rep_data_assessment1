@@ -14,7 +14,7 @@ output:
 ###2.Process/transform the data (if necessary) into a format suitable for your analysis
 
 First, create a directory to for this project.
-```{r }
+```{r}
 if (!file.exists("assessment1")){
         dir.create("assessment1")
 }
@@ -48,7 +48,7 @@ daysum<-ddply(data,.(date),summarize,dailysum=sum(steps))
 
 Make a histogram of the total number of steps taken each day.
 
-```{r histogram1}
+```{r figure1_histogram}
 hist(daysum$dailysum, main ="Histogram of Total Steps Taken Each Day",xlab="Total Steps Taken Each Day (steps)",col=c("Red","Orange","Yellow","Green","Blue"),border="White",ylim=c(0,40))
 ```
 
@@ -68,7 +68,7 @@ print(c("The median of total steps taken per day is ",totalmedian))
 
 To make a time series plot of average number of different intervals, first create a new data frame--"avg"" with the intervals and their average of steps across all times, and then plot the average over the intervals.
 
-```{r time_series_plot1}
+```{r figure2_time_series_plot}
 avg<-ddply(data,.(interval),summarize,average=mean(steps,na.rm=TRUE))
 
 plot(avg$interval, avg$average, type = "l",main="Average Daily Activity Pattern (NAs excluded)",xlab="Interval (minutes)",ylab="Average Total Steps")
@@ -136,7 +136,7 @@ newdaysum<-ddply(newdata,.(date),summarize,dailysum=sum(steps))
 
 Plot a histogram of total steps taken everyday and calculate the mean and median of total steps taken each day with the new data where the missing value of steps each day is replaced by the average value of that interval.
 
-```{r histogram2}
+```{r figure3_histogram}
 
 hist(newdaysum$dailysum, main ="Histogram of Total Steps Taken Each Day",xlab="Total Steps Taken Each Day (steps)",col=c("Red","Orange","Yellow","Green","Blue"),border="White",ylim=c(0,40))
 
@@ -174,13 +174,12 @@ for (i in 1:length(newdata$date)){
 newdata$weekdays<-as.factor(newdata$weekdays)
 
 ```
-=============
 
 ###2.Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). 
 
 Create a new dataset where the average of steps taken on weekdays and weekends are calculated and plot the weekday and weekend average.
 
-```{r comparison}
+```{r figure4_comparison}
 library(ggplot2)
 
 newavg<-ddply(newdata,.(interval,weekdays),summarize,average=mean(steps))

@@ -51,7 +51,7 @@ Make a histogram of the total number of steps taken each day.
 hist(daysum$dailysum, main ="Histogram of Total Steps Taken Each Day",xlab="Total Steps Taken Each Day (steps)",col=c("Red","Orange","Yellow","Green","Blue"),border="White",ylim=c(0,40))
 ```
 
-![plot of chunk histogram1](./PA1_template_files/figure-html/histogram1.png) 
+![plot of chunk figure1_histogram](./PA1_template_files/figure-html/figure1_histogram.png) 
 
 ###2.Calculate and report the mean and median total number of steps taken per day
 
@@ -90,7 +90,7 @@ avg<-ddply(data,.(interval),summarize,average=mean(steps,na.rm=TRUE))
 plot(avg$interval, avg$average, type = "l",main="Average Daily Activity Pattern (NAs excluded)",xlab="Interval (minutes)",ylab="Average Total Steps")
 ```
 
-![plot of chunk time_series_plot1](./PA1_template_files/figure-html/time_series_plot1.png) 
+![plot of chunk figure2_time_series_plot](./PA1_template_files/figure-html/figure2_time_series_plot.png) 
 
 
 ###2.Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
@@ -172,7 +172,7 @@ Plot a histogram of total steps taken everyday and calculate the mean and median
 hist(newdaysum$dailysum, main ="Histogram of Total Steps Taken Each Day",xlab="Total Steps Taken Each Day (steps)",col=c("Red","Orange","Yellow","Green","Blue"),border="White",ylim=c(0,40))
 ```
 
-![plot of chunk histogram2](./PA1_template_files/figure-html/histogram2.png) 
+![plot of chunk figure3_histogram](./PA1_template_files/figure-html/figure3_histogram.png) 
 
 
 ```r
@@ -219,7 +219,6 @@ for (i in 1:length(newdata$date)){
 
 newdata$weekdays<-as.factor(newdata$weekdays)
 ```
-=============
 
 ###2.Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). 
 
@@ -235,4 +234,4 @@ weekplot<-ggplot(newavg,aes(interval,average))
 weekplot+geom_line(color="steelblue")+facet_grid(weekdays~.)+labs(title="Average Activity Pattern ")+ labs(x="Interval (minutes)") +labs(y="Average Total Steps")+ylim(0,250)
 ```
 
-![plot of chunk comparison](./PA1_template_files/figure-html/comparison.png) 
+![plot of chunk figure4_comparison](./PA1_template_files/figure-html/figure4_comparison.png) 
